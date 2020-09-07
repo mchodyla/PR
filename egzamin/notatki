@@ -2,7 +2,10 @@ Przetwarzanie równoległe (parallel processing) - koncepcje skupiają się gł�
 
 omp
 
+słownik pojęć
+
 MP  multiprocessor
+pp pamięć podręczna (procesora L1, L2 i L3)
 
 Zasada lokalności : koncepcja używania blisko (tanio) dostępnych zasobów maksymalnie często, w celu zmniejszenia ogólnego kosztu dostępu do danych.
 Wyścig w dostępie (Race condition) - postać kodu MP mogąca doprowadzić do niedeterministycznych wyników
@@ -10,4 +13,38 @@ Wyścig w dostępie (Race condition) - postać kodu MP mogąca doprowadzić do n
 apparently równoległy zapis, synchronizacja i równoległy odczyt nie jest sytuacją wyścigu (lol),
 natomiast w każdym innym oczywistym przypadku (równoczesnego dostępu do danych) - jest.
 
-Zamek (lock) można założyć zarówno na _zmiennej_ jak i na _kodzie_
+Zamek (lock) można założyć zarówno na _zmiennej_ jak i na _kodzie
+
+atomic : zmienna nie jest lokalna (jest współdzielona), więc nie jest w sposób ciągły dostępna dla wątku w procesorze_
+
+aby algorytmy równoległe były efektywne, należy synchronizować obliczenia najrzadziej jak to możliwe (przy zachowaniu sensu obliczeń)
+
+
+CELE W PROGRAMOWANIU RÓWNOLEGŁYM:
+	- SKALOWALNOŚĆ : możliwość łatwego dodania kolejnych procesorów
+	- WYDAJNOŚĆ : efektywnie wykorztystać dostępne procesory
+	- PRZENOŚCNOŚĆ :  soft ma się nadawać do przeniesienia między systemami (to zapewnia standaryzacja bibliotek wspomagających)
+
+PAMIĘĆ : 
+	parametry:	
+		opóźnienie (latency) - czas odp na żądanie z procesora
+		przepustowość (bandwidth) - max ilość danych dostarczana w jednostce czasu
+		wielkość linii pp (cache line) - liczba (sąsiednich) słów pobieranych jednorazowo do pp z pamięci głównej //gdy w pp nie ma danych z interesującego zakresu adresów (cache miss)
+	
+	CPU <-> L1 <-> PP
+
+	stosunek trafien do pp (hit ratio) : cache_hits/all_data_requests == cache_hits/(cache_hits+cache_misses) : 
+	średni czas dostępu do słowa : T = h t(pp) + (1-h) t(m)
+			h - hit ratio, t(pp) - czas dost. PP, t(m) - czas dost. pam. głównej (pobranie danej z PG do PP L1)
+			
+	Analiza jakości dostępu do pamięci :
+		dane :
+			dostępność pamięci / położenie zmiennych (w tym tablic) w pamięciach (czy są obok siebie? w jakiej pamięci?)
+			wielkość linii pp procesora
+			wielkości typów danych 
+			średni hit ratio, lub hit ratio i czasy dostępów
+	Przykład : 
+		zmienna lokalna w rejestrze, dodawanie w pętli wartości z tablicy float[1000], której dane są sąsiednio w pamięci.
+		float - 4B, 4 * 1000 = 4000B, cache line - 64B => 4000/64 = 62,5 ~= 63 cache lines
+		średni hit ratio dany = 15/16, => średnio 
+		
