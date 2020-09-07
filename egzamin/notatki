@@ -1,0 +1,13 @@
+Przetwarzanie równoległe (parallel processing) - koncepcje skupiają się głównie wokół efektywności równoległego wykonywania zadań (w przeciwieństwie do architektur rozproszonych na PRoz).
+
+omp
+
+MP  multiprocessor
+
+Zasada lokalności : koncepcja używania blisko (tanio) dostępnych zasobów maksymalnie często, w celu zmniejszenia ogólnego kosztu dostępu do danych.
+Wyścig w dostępie (Race condition) - postać kodu MP mogąca doprowadzić do niedeterministycznych wyników
+
+apparently równoległy zapis, synchronizacja i równoległy odczyt nie jest sytuacją wyścigu (lol),
+natomiast w każdym innym oczywistym przypadku (równoczesnego dostępu do danych) - jest.
+
+Zamek (lock) można założyć zarówno na _zmiennej_ jak i na _kodzie_
